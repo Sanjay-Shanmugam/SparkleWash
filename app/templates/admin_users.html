@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 100%;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Manage Users</h1>
+        <div>
+            <a href="/admin" class="btn" style="margin-right: 1rem;">Back to Dashboard</a>
+            <span class="badge badge-COMPLETED">Admin Mode</span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email / Phone</th>
+                    <th>Role</th>
+                    <th>Vehicle Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>#{{ user['id'] }}</td>
+                    <td><strong>{{ user['name'] }}</strong></td>
+                    <td>
+                        {{ user['email'] }}<br>
+                        <span style="font-size: 0.85rem; opacity: 0.7;">{{ user['phone'] }}</span>
+                    </td>
+                    <td>
+                        {% if user['role'] == 'admin' %}
+                        <span class="badge badge-COMPLETED">Admin</span>
+                        {% else %}
+                        <span class="badge" style="background: #333;">User</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ user['vehicle_no'] }} <br>
+                        <span style="font-size: 0.85rem; opacity: 0.7;">{{ user['vehicle_type'] }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 500px; margin: 2rem auto;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Create Account</h2>
+
+    <form action="/register" method="POST">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" name="name" id="name" required placeholder="John Doe">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" name="email" id="email" required placeholder="you@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" name="phone" id="phone" required placeholder="123-456-7890">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required placeholder="Create a password">
+        </div>
+
+        <hr style="margin: 2rem 0; border-color: rgba(255,255,255,0.2);">
+        <h4 style="margin-bottom: 1rem;">Vehicle Details</h4>
+
+        <div class="form-group">
+            <label for="vehicle_no">Vehicle Number</label>
+            <input type="text" name="vehicle_no" id="vehicle_no" required placeholder="ABC-1234">
+        </div>
+
+        <div class="form-group">
+            <label for="vehicle_type">Vehicle Type</label>
+            <select name="vehicle_type" id="vehicle_type">
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Truck">Truck</option>
+                <option value="Coupe">Coupe</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-lg" style="width: 100%; margin-top: 1rem;">Register</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 1.5rem; opacity: 0.8;">
+        Already have an account? <a href="/login" style="color: white; font-weight: bold;">Log In</a>
+    </p>
+</div>
+{% endblock %}

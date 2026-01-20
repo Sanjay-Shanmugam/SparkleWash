@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 100%;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>Admin Dashboard</h1>
+        <div>
+            <a href="/admin/users" class="btn" style="margin-right: 1rem;">Manage Users</a>
+            <span class="badge badge-COMPLETED">Admin Mode</span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Vehicle</th>
+                    <th>Service</th>
+                    <th>Date/Time</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>#{{ booking['id'] }}</td>
+                    <td>
+                        <strong>{{ booking['customer_name'] }}</strong><br>
+                        <span style="font-size: 0.85rem; opacity: 0.8;">{{ booking['phone'] }}</span>
+                    </td>
+                    <td>{{ booking['vehicle_no'] }}</td>
+                    <td>{{ booking['service_name'] }}</td>
+                    <td>
+                        {{ booking['booking_date'] }}<br>
+                        {{ booking['start_time'] }}
+                    </td>
+                    <td><span class="badge badge-{{ booking['status'] }}">{{ booking['status'] }}</span></td>
+                    <td>
+                        <form action="/admin/update_status/{{ booking['id'] }}" method="POST"
+                            style="display: flex; gap: 0.5rem;">
+                            <select name="status" style="padding: 0.4rem; font-size: 0.9rem; min-width: 120px;">
+                                <option value="PENDING" {% if booking['status']=='PENDING' %}selected{% endif %}>Pending
+                                </option>
+                                <option value="CONFIRMED" {% if booking['status']=='CONFIRMED' %}selected{% endif %}>
+                                    Confirmed</option>
+                                <option value="COMPLETED" {% if booking['status']=='COMPLETED' %}selected{% endif %}>
+                                    Completed</option>
+                                <option value="CANCELLED" {% if booking['status']=='CANCELLED' %}selected{% endif %}>
+                                    Cancelled</option>
+                            </select>
+                            <button type="submit" class="btn" style="padding: 0.4rem 0.8rem;">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-container">
+    <div class="hero-overlay"></div>
+
+    <!-- Slideshow Images -->
+    <div class="slide active" style="background-image: url('{{ url_for('static', filename='hero_glossy_1.png') }}');">
+    </div>
+    <div class="slide" style="background-image: url('{{ url_for('static', filename='hero_glossy_2.png') }}');"></div>
+    <div class="slide" style="background-image: url('{{ url_for('static', filename='hero_glossy_3.png') }}');"></div>
+
+    <div class="hero-content">
+        <h1>THE ULTIMATE<br>SHINE</h1>
+        <p>Precision detailing for the discerning owner.</p>
+        <a href="/book" class="btn btn-lg">Book Appointment</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- SERVICES SECTION -->
+    <section style="margin-bottom: 6rem;">
+        <h2 class="section-title reveal">Our Services</h2>
+        <div class="services-grid">
+            {% for service in services %}
+            <div class="service-card reveal">
+                <h3>{{ service['name'] }}</h3>
+                <div class="price">₹{{ "%.2f"|format(service['price']) }}</div>
+                <p style="color: #888; margin-bottom: 2rem;">{{ service['description'] }}</p>
+                <div
+                    style="border-top: 1px solid #222; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.9rem; color: #666;">⏱ {{ service['duration_minutes'] }} MINS</span>
+                    <a href="/book" style="color: var(--primary); text-decoration: none; font-weight: 700;">SELECT</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- CINEMATIC GALLERY SECTION -->
+    <section style="margin-bottom: 6rem;">
+        <h2 class="section-title reveal"
+            style="color: white; border-bottom: 2px solid var(--primary); display: inline-block; padding-bottom: 0.5rem; margin-bottom: 3rem;">
+            Premium Gallery</h2>
+
+        <div class="gallery-grid reveal">
+            <div class="gallery-item large"
+                style="background-image: url('{{ url_for('static', filename='gallery_defender.jpg') }}');">
+                <div class="gallery-overlay">
+                    <span>Exterior Wash</span>
+                </div>
+            </div>
+            <div class="gallery-item"
+                style="background-image: url('{{ url_for('static', filename='gallery_audi.jpg') }}');">
+                <div class="gallery-overlay">
+                    <span>Ceramic Coating</span>
+                </div>
+            </div>
+            <div class="gallery-item"
+                style="background-image: url('{{ url_for('static', filename='gallery_interior.jpg') }}');">
+                <div class="gallery-overlay">
+                    <span>Interior Detail</span>
+                </div>
+            </div>
+            <div class="gallery-item large"
+                style="background-image: url('{{ url_for('static', filename='gallery_black.jpg') }}');">
+                <div class="gallery-overlay">
+                    <span>Paint Correction</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT BANNER -->
+    <section class="reveal"
+        style="background: linear-gradient(45deg, #111, #1a1a1a); padding: 4rem; border-radius: var(--radius); border: 1px solid #333; text-align: center;">
+        <h2 style="color: white; margin-bottom: 1.5rem; font-size: 2.5rem;">Ready specifically for your car?</h2>
+        <p style="color: #888; margin-bottom: 2.5rem; font-size: 1.2rem;">Book your slot now or call us for a custom
+            quote.</p>
+        <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+            <a href="/book" class="btn btn-lg">Book Appointment</a>
+            <a href="tel:6369637228" class="btn btn-lg btn-secondary">Call: 6369637228</a>
+            <a href="sms:6369637228?body=Hello SparkleWash, I would like to book a slot."
+                class="btn btn-lg btn-secondary">Message Us</a>
+        </div>
+    </section>
+
+</div>
+{% endblock %}

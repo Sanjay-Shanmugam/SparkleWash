@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 800px; margin: 0 auto;">
+    <h1 style="margin-bottom: 2rem; text-align: center; text-transform: uppercase;">Book Your Wash</h1>
+
+    <form action="/book" method="POST">
+        <div class="form-group">
+            <label for="service_id">Select Service</label>
+            <select name="service_id" id="service_id" required>
+                {% for service in services %}
+                <option value="{{ service['id'] }}">{{ service['name'] }} - ₹{{ "%.2f"|format(service['price']) }} ({{
+                    service['duration_minutes'] }}m)</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="booking_date">Date</label>
+            <input type="date" name="booking_date" id="booking_date" required>
+        </div>
+
+        <div class="form-group">
+            <label>Select Time</label>
+
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; justify-content: center;">
+                <!-- Clock Visualization -->
+                <div class="analog-clock" id="analog-clock">
+                    <div class="clock-face">
+                        <div class="hand hour-hand"></div>
+                        <div class="hand minute-hand"></div>
+                        <div class="center-dot"></div>
+                        <!-- Markers -->
+                        <div class="marker m-12"></div>
+                        <div class="marker m-3"></div>
+                        <div class="marker m-6"></div>
+                        <div class="marker m-9"></div>
+                    </div>
+                </div>
+
+                <div id="slots-container" class="slots-container">
+                    <p style="opacity: 0.7; color: var(--text-dim);">Select a date to see available slots.</p>
+                </div>
+            </div>
+
+            <input type="hidden" name="start_time" id="start_time" required>
+        </div>
+
+        <hr style="margin: 2rem 0; border-color: rgba(255,255,255,0.1);">
+        <p style="margin-bottom: 1rem; opacity: 0.8; font-size: 1.1rem; text-align: center; color: var(--primary);">
+            Booking for: <strong>{{ current_user.name }}</strong><br>
+            <span style="font-size: 0.9rem; color: white;">Vehicle: {{ current_user.vehicle_no }}</span>
+        </p>
+
+        <button type="submit" class="btn btn-lg" style="width: 100%; margin-top: 1rem;">Confirm Booking</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="glass-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1>My Bookings</h1>
+        <a href="/book" class="btn">New Booking</a>
+    </div>
+
+    {% if bookings %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking['service_name'] }}</td>
+                    <td>{{ booking['booking_date'] }}</td>
+                    <td>{{ booking['start_time'] }} - {{ booking['end_time'] }}</td>
+                    <td><span class="badge badge-{{ booking['status'] }}">{{ booking['status'] }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem;">
+        <p style="font-size: 1.2rem; margin-bottom: 1rem;">You haven't made any bookings yet.</p>
+        <a href="/book" class="btn">Book Your First Wash</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
