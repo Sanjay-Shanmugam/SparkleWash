@@ -18,6 +18,9 @@ class MySQLConnectionWrapper:
     def execute(self, query, params=None):
         cursor = self.conn.cursor(dictionary=True)
         if params:
+            # Convert SQLite placeholders (?) to MySQL placeholders (%s)
+            # Note: This is a basic replacement. Be careful with '?' inside strings.
+            query = query.replace('?', '%s')
             cursor.execute(query, params)
         else:
             cursor.execute(query)
