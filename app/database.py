@@ -3,6 +3,7 @@ import os
 import mysql.connector
 from flask import g
 from dotenv import load_dotenv
+import urllib.parse
 
 load_dotenv()
 
@@ -35,18 +36,29 @@ class MySQLConnectionWrapper:
         return None 
 
 def get_db_connection():
-    # Check for TiDB/MySQL Environment Variables
-    if os.environ.get('TIDB_HOST'):
+    # Check for TiDB Connection String
+    if os.environ.get('TIDB_CONNECTION_STRING'):
         try:
-            conn = mysql.connector.connect(
-                host=os.environ.get('TIDB_HOST'),
-                port=os.environ.get('TIDB_PORT', 4000),
-                user=os.environ.get('TIDB_USER'),
-                password=os.environ.get('TIDB_PASSWORD'),
-                database=os.environ.get('TIDB_DB_NAME'),
-                ssl_verify_cert=True,
-                ssl_ca=os.environ.get('TIDB_SSL_CA')
-            )
+            url = urllib.parse.urlparse(os.environ.get('TIDB_CONNECTION_STRING'))
+            
+            # Parse query parameters for SSL CA
+            query_params = urllib.parse.parse_qs(url.query)
+            ssl_ca = query_params.get('ssl_ca', [None])[0]
+            ssl_verify_cert = query_params.get('ssl_verify_cert', ['true'])[0].lower() == 'true'
+
+            conn_kwargs = {
+                'host': url.hostname,
+                'port': url.port or 4000,
+                'user': url.username,
+                'password': url.password,
+                'database': url.path[1:],  # Remove leading slash
+                'ssl_verify_cert': ssl_verify_cert
+            }
+            
+            if ssl_ca:
+                conn_kwargs['ssl_ca'] = ssl_ca
+
+            conn = mysql.connector.connect(**conn_kwargs)
             return MySQLConnectionWrapper(conn)
         except Exception as e:
             print(f"TiDB Connection Failed: {e}. Falling back to SQLite.")
