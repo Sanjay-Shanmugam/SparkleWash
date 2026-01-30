@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import sqlite3
 from .database import get_db_connection
 from .models import User
+from .utils import send_sms
 
 main = Blueprint('main', __name__)
 
@@ -47,20 +48,26 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
-        conn = get_db_connection()
-        user_data = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
-        conn.close()
-        
-        if user_data and check_password_hash(user_data['password_hash'], password):
-            user = User(user_data['id'], user_data['name'], user_data['email'], user_data['role'], 
-                       user_data['phone'], user_data['vehicle_no'], user_data['vehicle_type'])
-            login_user(user)
-            flash('Logged in successfully.', 'success')
-            if user.role == 'admin':
-                return redirect(url_for('main.admin_dashboard'))
-            return redirect(url_for('main.dashboard'))
-        else:
-            flash('Invalid email or password.', 'error')
+        try:
+            conn = get_db_connection()
+            user_data = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+            conn.close()
+            
+            if user_data and check_password_hash(user_data['password_hash'], password):
+                user = User(user_data['id'], user_data['name'], user_data['email'], user_data['role'], 
+                           user_data['phone'], user_data['vehicle_no'], user_data['vehicle_type'])
+                login_user(user)
+                flash('Logged in successfully.', 'success')
+                if user.role == 'admin':
+                    return redirect(url_for('main.admin_dashboard'))
+                return redirect(url_for('main.dashboard'))
+            else:
+                flash('Invalid email or password.', 'error')
+        except Exception as e:
+            print(f"Login Error: {e}")
+            import traceback
+            traceback.print_exc()
+            flash(f"An error occurred during login: {e}", 'error')
             
     return render_template('login.html')
 
@@ -139,7 +146,11 @@ def book():
     if request.method == 'POST':
         service_id = request.form['service_id']
         booking_date = request.form['booking_date']
-        start_time = request.form['start_time']
+        start_time = request.form.get('start_time')
+        
+        if not start_time:
+            flash('Please select a time slot.', 'error')
+            return render_template('booking.html', services=services)
         
         service = conn.execute('SELECT * FROM services WHERE id = ?', (service_id,)).fetchone()
         duration = service['duration_minutes']
@@ -154,6 +165,14 @@ def book():
             booking_id = cur.lastrowid
             
             conn.commit()
+            
+            # Send SMS Notification
+            try:
+                msg_body = f"Thank you for choosing SparkleWash! Your booking for {service['name']} on {booking_date} at {start_time} is confirmed."
+                send_sms(current_user.phone, msg_body)
+            except Exception as e:
+                print(f"SMS Error: {e}")
+
             return redirect(url_for('main.booking_confirmed', booking_id=booking_id))
             
         except sqlite3.Error as e:
