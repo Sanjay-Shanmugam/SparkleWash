@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Fix for "Uncaught (in promise) AbortError"
+    if (window.HTMLMediaElement) {
+        const originalPlay = HTMLMediaElement.prototype.play;
+        HTMLMediaElement.prototype.play = function () {
+            return originalPlay.call(this).catch(err => {
+                if (err.name === 'AbortError') return;
+                throw err;
+            });
+        };
+    }
     // 1. Page Loader
     window.addEventListener('load', () => {
         const loader = document.getElementById('page-loader');
