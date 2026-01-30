@@ -4,6 +4,7 @@ import mysql.connector
 from flask import g
 from dotenv import load_dotenv
 import urllib.parse
+import certifi
 
 load_dotenv()
 
@@ -57,6 +58,9 @@ def get_db_connection():
             
             if ssl_ca:
                 conn_kwargs['ssl_ca'] = ssl_ca
+            else:
+                # Fallback to certifi if no specific CA provided
+                conn_kwargs['ssl_ca'] = certifi.where()
 
             conn = mysql.connector.connect(**conn_kwargs)
             return MySQLConnectionWrapper(conn)
